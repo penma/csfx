@@ -43,7 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	hwnd = CreateWindowEx(
 		0,
 		"SfxProgressWindow",
-		"",
+		"Sfx Archive Extracting",
 		WS_POPUP | WS_VISIBLE,
 		pb_left, pb_top, pb_width, pb_height,
 		NULL, NULL, hInstance, NULL
