@@ -8,19 +8,19 @@
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	WNDCLASSEX wc;
 	HWND hwnd, hprogress, hdesktop;
-	
+
 	/* find desktop dimensions, to center the window on screen */
 	hdesktop = GetDesktopWindow();
 	RECT rdesktop;
 	GetWindowRect(hdesktop, &rdesktop);
-	
+
 	/* prepare window dimensions */
 	int pb_left, pb_top, pb_width, pb_height;
 	pb_width = 400;
 	pb_height = 20;
 	pb_left = (rdesktop.right - pb_width) / 2;
 	pb_top = (rdesktop.bottom - pb_height) / 2;
-	
+
 	/* Create application window */
 	wc.cbSize            = sizeof(WNDCLASSEX);
 	wc.style             = 0;
@@ -34,12 +34,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wc.lpszMenuName      = NULL;
 	wc.lpszClassName     = "SfxProgressWindow";
 	wc.hIconSm           = LoadIcon(NULL, IDI_APPLICATION);
-	
+
 	if (!RegisterClassEx(&wc)) {
 		MessageBox(NULL, "Window registration failed!", "Error", MB_ICONEXCLAMATION | MB_OK);
 		return 0;
 	}
-	
+
 	hwnd = CreateWindowEx(
 		0,
 		"SfxProgressWindow",
@@ -48,21 +48,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		pb_left, pb_top, pb_width, pb_height,
 		NULL, NULL, hInstance, NULL
 	);
-	
+
 	if (hwnd == NULL) {
 		MessageBox(NULL, "Window creation failed", "err", MB_ICONEXCLAMATION | MB_OK);
 		return 0;
 	}
-	
+
 	ShowWindow(hwnd, nCmdShow);
 	UpdateWindow(hwnd);
-	
+
 	/* Initialize commctrl */
 	INITCOMMONCONTROLSEX InitCtrlEx;
 	InitCtrlEx.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	InitCtrlEx.dwICC  = ICC_PROGRESS_CLASS;
 	InitCommonControlsEx(&InitCtrlEx);
-	
+
 	/* Create the progress bar */
 	hprogress = CreateWindowEx(
 		0,
@@ -73,7 +73,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		hwnd, NULL, hInstance, NULL
 	);
 	UpdateWindow(hprogress);
-	
+
 	/* Load the data archive */
 	HRSRC res = FindResource(NULL, "SFXDATA", RT_RCDATA);
 	char *data = LockResource(LoadResource(NULL, res));
@@ -81,9 +81,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int data_pos = 0;
 	int in_file = -1;
 	int in_file_rest = 0;
-	
+
 	chdir("C:\\extract");
-	
+
 	while (data_pos < data_len) {
 		if (in_file == -1) {
 			/* collect file name and size */
@@ -92,11 +92,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			int ftype = data[data_pos + 156];
 			printf("%s %c %d\n", fn, ftype, fsize);
 			fflush(stdout);
-			
+
 			/* do stuff depending on the type */
 			switch (ftype) {
 			case '0': /* file */
 				in_file = open(fn, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY);
+
 				if (in_file == -1) {
 					char errstr[1024];
 					strncpy(errstr, strerror(errno), 1023);
@@ -109,7 +110,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					exit(1);
 				}
 				in_file_rest = fsize;
-				
+
 				/* properly handle empty files */
 				if (in_file_rest == 0) {
 					close(in_file);
@@ -134,10 +135,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				in_file = -1;
 			}
 		}
-		
+
 		data_pos += 512;
 		SendMessage(hprogress, PBM_SETPOS, (int)(((double)data_pos / data_len) * 100.0), 0);
 		UpdateWindow(hprogress);
-		//Sleep(30);
 	}
 }
