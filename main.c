@@ -85,7 +85,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	
 	chdir("C:\\extract");
 	
-	while (1) {
+	while (data_pos < data_len) {
 		if (in_file == -1) {
 			/* collect file name and size */
 			char *fn = data + data_pos;
