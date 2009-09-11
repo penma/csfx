@@ -74,11 +74,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	);
 	UpdateWindow(hprogress);
 	
-	/* Load the compressed data */
-	char *compressed_data = LockResource(LoadResource(NULL, FindResource(NULL, "SFXDATA", RT_RCDATA)));
-	
-	char *data = compressed_data;
-	int data_len = 30341632;
+	/* Load the data archive */
+	HRSRC res = FindResource(NULL, "SFXDATA", RT_RCDATA);
+	char *data = LockResource(LoadResource(NULL, res));
+	int data_len = SizeofResource(NULL, res);
 	int data_pos = 0;
 	int in_file = -1;
 	int in_file_rest = 0;
