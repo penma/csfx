@@ -162,10 +162,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		UpdateWindow(hprogress);
 	}
 
-	/* execute a contained program */
 	char command[1024];
 	if (LoadString(hInstance, 23, command, 1024)) {
-		execl(command, NULL);
+		/* execute a contained program */
+		ShellExecute(NULL, "open", command, NULL, NULL, SW_SHOWNORMAL);
 	} else {
 		/* no program contained. spawn explorer */
 		ShellExecute(NULL, "open", ".", NULL, NULL, SW_SHOWNORMAL);
