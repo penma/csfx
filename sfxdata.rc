@@ -1,1 +1,5 @@
 SFXDATA RCDATA "windizz.tar"
+STRINGTABLE BEGIN
+	23 "boot_dizzy.bat"
+END
+

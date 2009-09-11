@@ -1,0 +1,13 @@
+How to create a self-extracting archive using CSFX
+
+* put all your files into a standard uncompressed tarball
+* create sfxdata.rc, containing these lines
+     SFXDATA RCDATA "your_archive.tar"
+     STRINGTABLE BEGIN
+         23 "a_bootstrap_program.exe"
+     END
+  (you can omit the last three lines, in which case an explorer.exe window
+  will be opened showing the temporary folder)
+* run 'make'
+* optionally compress the produced executable with UPX
+
