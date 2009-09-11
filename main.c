@@ -4,6 +4,26 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <time.h>
+
+void enter_temp_dir() {
+	char temppath[1024];
+
+	do {
+		GetTempPath(1024, temppath);
+
+		char tempname[64];
+		snprintf(tempname, 63, "sfx%03o_%08x_%d",
+			GetCurrentProcessId(),
+			time(NULL),
+			rand()
+		);
+
+		strcat(temppath, tempname);
+	} while (!CreateDirectory(temppath, NULL));
+
+	chdir(temppath);
+}
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	WNDCLASSEX wc;
@@ -82,7 +102,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	int in_file = -1;
 	int in_file_rest = 0;
 
-	chdir("C:\\extract");
+	/* make a temporary directory and chdir to it */
+	enter_temp_dir();
 
 	while (data_pos < data_len) {
 		if (in_file == -1) {
