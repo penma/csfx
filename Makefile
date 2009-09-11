@@ -1,4 +1,5 @@
-CFLAGS = -std=c99
+CFLAGS = -std=c99 -mwindows
+LDFLAGS = -mwindows
 CC = gcc
 
 all: csfx
@@ -10,7 +11,7 @@ main.o: %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 csfx: main.o sfxdata.o
-	$(CC) -o $@ $^ -lcomctl32
+	$(CC) $(LDFLAGS) -o $@ $^ -lcomctl32
 
 clean:
 	$(RM) *.o csfx.exe
