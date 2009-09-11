@@ -99,7 +99,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			case '0': /* file */
 				in_file = open(fn, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY);
 				if (in_file == -1) {
-					perror(fn);
+					char errstr[1024];
+					strncpy(errstr, strerror(errno), 1023);
+					char message[2048] = "";
+					strcat(message, "Extracting ");
+					strcat(message, fn);
+					strcat(message, " failed: ");
+					strcat(message, errstr);
+					MessageBox(NULL, message, "Sfx: Error while extracting", MB_ICONERROR | MB_OK);
 					exit(1);
 				}
 				in_file_rest = fsize;
